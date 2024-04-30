@@ -7,7 +7,9 @@ Secure-Med is a web application designed to provide a secure platform for managi
 1. **Secure Medical Records**: Store and manage medical records  on IPFS securely, ensuring patient confidentiality.
 2. **CostEffective Storage**: Utilising IPFS can reduce the cost of storage significantly by only storing the hash Value.
 3. **Security** : Images are encrypted using the AES encryption algorithm to enhance security.
-4. **Disease Prediction** : Disease Prediction using Random Forest Classifier on 41 Unique diseases with 132 Symptoms 
+4. **Disease Prediction** : Disease Prediction using Random Forest Classifier on 41 Unique diseases with 132 Symptoms.
+5. **Medical Report Analysis**: Analysing Patient medical reports using Gemini
+6. **Treatment Plan** : Providing Treatment Plan based on Disease to Patients.
 
 
 ## 🌐 Sources
