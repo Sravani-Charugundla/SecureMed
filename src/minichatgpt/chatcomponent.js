@@ -10,39 +10,55 @@ function ChatApp() {
 
   const [convertedText, setConvertedText] = useState('');
   var finalval='';
-  useEffect(() => {
+
+useEffect(() => {
     const getInitialResponse = async () => {
-
       const ff = sessionStorage.getItem("myanalyseimage");
-      // console.log(ff);
-
       if (!ff) return;
       
       Tesseract.recognize(ff)
           .then(async ({ data: { text } }) => {
               console.log("Recognized Text:", text);
               setConvertedText(text);
+              
+              // Send text to Flask backend
               try {
+                const response = await fetch('http://localhost:5000/api/process-text', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ text }),
+                });
+                
+                const result = await response.json();
+                console.log('RAG processing result:', result);
+                
+                // Continue with your existing chat logic
                 console.log(text)
-                const defaultPrompt =text;
-                // const defaultPrompt = convertedText;
+                const defaultPrompt = text;
                 appendUserMessage(defaultPrompt);
-                const result = await model.generateContent(defaultPrompt);
-                const response = await result.response.text();
-                appendBotMessage(response.trim());
+                const modelResult = await model.generateContent(defaultPrompt);
+                const modelResponse = await modelResult.response.text();
+                appendBotMessage(modelResponse.trim());
               } catch (error) {
-                appendErrorMessage("Oops! Something went wrong while retrieving the response. Please try again.");
+                console.error('Error processing text:', error);
+                appendErrorMessage("Error processing text. Please try again.");
               }
-              // navigate('/ChatComponent', { state: { text } });
           })
           .catch(error => {
               console.error("Error recognizing text:", error);
           });
-
     };
 
     getInitialResponse();
   }, []);
+
+
+
+
+
+  
 
   const getChatResponse = async () => {
     const userText = inputText.trim();
@@ -51,9 +67,26 @@ function ChatApp() {
     appendUserMessage(userText);
 
     try {
-      const result = await model.generateContent(userText);
-      const response = await result.response.text();
-      appendBotMessage(response.trim());
+      // First, query our RAG system
+      const response = await fetch('http://localhost:5000/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question: userText }),
+      });
+      
+      const result = await response.json();
+      
+      if (result.error) {
+        // If RAG system fails, fallback to the model
+        const modelResult = await model.generateContent(userText);
+        const modelResponse = await modelResult.response.text();
+        appendBotMessage(modelResponse.trim());
+      } else {
+        // Use the RAG system's response
+        appendBotMessage(result.answer);
+      }
     } catch (error) {
       appendErrorMessage("Oops! Something went wrong while retrieving the response. Please try again.");
     }

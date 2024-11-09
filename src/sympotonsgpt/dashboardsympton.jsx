@@ -62,8 +62,8 @@ export default function Dashboardsympton() {
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Orders" data-bs-original-title="Orders">
-                                <i class="fa-solid fa-file-pdf"></i>
+                                <a href="/MedicationMain" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Orders" data-bs-original-title="Orders">
+                                <i class="fa-solid fa-clock"></i>
                                 </a>
                             </li>
                         </ul>

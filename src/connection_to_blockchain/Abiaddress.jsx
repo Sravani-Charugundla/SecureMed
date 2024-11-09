@@ -1,11 +1,3 @@
-// import React from 'react'
-
-// export default function passAbiAddress() {
-//   return (
-//     <div>passAbiAddress</div>
-//   )
-// }
-
 import React, { createContext, useState } from 'react';
 import Web3 from 'web3';
 import { useEffect } from 'react';
@@ -156,7 +148,7 @@ export const AppProvider = ({ children }) => {
         }
     ]);
     
-	const [MyAddress, setMyAddress] = useState('0x66f3e5D0098238EfAEe76b66D9C87d7D8BC39C2c');
+	const [MyAddress, setMyAddress] = useState('0x983A517fF259F335743505302586cfCb082d6940');
 	const [MyCurrAccount, setMyCurrAccount] = useState('');
 	useEffect(() => {
 		const onload23 = async () => {
