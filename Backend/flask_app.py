@@ -33,18 +33,23 @@ def chat():
 
         question = data['question']
         
-        # Get relevant context from database
+        # Get relevant chunks from database
         relevant_chunks = query_database(question)
-        # print(relevant_chunks)
         if relevant_chunks is None:
             return jsonify({'error': 'Error querying database'}), 500
             
         context = "\n\n".join(relevant_chunks)
         print(context)
+        
         # Generate answer using the context
         answer = generate_answer(question, context)
         print(answer)
-        return jsonify({'answer': answer})
+        
+        # Return both answer and sources
+        return jsonify({
+            'answer': answer,
+            'references': relevant_chunks  # Include the chunks as references
+        })
 
     except Exception as e:
         print(f"Error {e}")

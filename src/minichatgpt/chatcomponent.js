@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { model } from './mainmodule.js';
 import { useLocation } from 'react-router-dom';
 import Tesseract from 'tesseract.js';
+import './ChatComponent.css';
 
 function ChatApp() {
   const location = useLocation();
@@ -67,7 +68,6 @@ useEffect(() => {
     appendUserMessage(userText);
 
     try {
-      // First, query our RAG system
       const response = await fetch('http://localhost:5000/api/chat', {
         method: 'POST',
         headers: {
@@ -79,13 +79,11 @@ useEffect(() => {
       const result = await response.json();
       
       if (result.error) {
-        // If RAG system fails, fallback to the model
         const modelResult = await model.generateContent(userText);
         const modelResponse = await modelResult.response.text();
         appendBotMessage(modelResponse.trim());
       } else {
-        // Use the RAG system's response
-        appendBotMessage(result.answer);
+        appendBotMessage(result.answer, result.references);
       }
     } catch (error) {
       appendErrorMessage("Oops! Something went wrong while retrieving the response. Please try again.");
@@ -100,10 +98,14 @@ useEffect(() => {
     ]);
   };
 
-  const appendBotMessage = (message) => {
+  const appendBotMessage = (message, references = []) => {
     setChatMessages(prevMessages => [
       ...prevMessages,
-      { type: 'bot', text: message }
+      {
+        type: 'bot',
+        text: message,
+        references: references
+      }
     ]);
   };
 
@@ -128,6 +130,18 @@ useEffect(() => {
                     </li>
                   ))}
                 </ul>
+                {message.type === 'bot' && message.references && message.references.length > 0 && (
+                  <div className="references-section mt-2">
+                    <h6 className="references-title">References:</h6>
+                    <ul className="references-list">
+                      {message.references.map((ref, idx) => (
+                        <li key={idx} className="reference-item">
+                          <small className="text-muted">"{ref.substring(0, 200)}..."</small>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </p>
             </div>
           ))}

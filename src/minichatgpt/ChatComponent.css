@@ -1,0 +1,25 @@
+.references-section {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+}
+
+.references-title {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 5px;
+}
+
+.references-list {
+  list-style: none;
+  padding-left: 10px;
+  margin: 0;
+}
+
+.reference-item {
+  font-size: 0.85rem;
+  margin-bottom: 5px;
+  padding: 5px;
+  border-left: 2px solid #dee2e6;
+} 

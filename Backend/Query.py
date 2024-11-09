@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from chromadb.utils.embedding_functions.openai_embedding_function import OpenAIEmbeddingFunction
 import openai
 import os
+from groq import Groq
 
 # Load environment variables
 load_dotenv()
@@ -32,26 +33,27 @@ def query_database(query_text, num_chunks=5):
         return None
 
 def generate_answer(question, context):
-    prompt = f"""Answer the question based on the provided {context}. If the answer cannot be found in the context, respond with "I cannot answer this question based on the provided context."
+    prompt = f"""Answer the question based on the provided context. If the answer cannot be found in the context, respond with "I cannot answer this question based on the provided context."
                 
                 Context: {context}
                 Question: {question}
                 Answer:"""
     
-    openai.api_key = os.getenv('OPENAI_API_KEY')
+    client = Groq()
     
-    response = openai.ChatCompletion.create(
-        model='gpt-4o-mini',
+    completion = client.chat.completions.create(
+        model="llama3-8b-8192",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": prompt}
         ],
-        max_tokens=1000,
-        n=1,
-        temperature=0.3
+        temperature=0.8,
+        max_tokens=1024,
+        top_p=1,
+        stream=False  # Changed to False for simpler handling
     )
     
-    return response.choices[0].message['content'].strip()
+    return completion.choices[0].message.content.strip()
 
 if __name__ == "__main__":
     question = "your question here"
